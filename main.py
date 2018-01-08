@@ -1,3 +1,4 @@
+print("Importing modules...")
 import numpy as np
 import tensorflow as tf
 import os
@@ -10,10 +11,14 @@ from helper.object_slicer import ObjectSlicer
 from utils import label_map_util
 from helper.sentiment_analysis import SentimentAnalysis
 
-SHOW_IMAGE_OUTPUT = False
-
+print("Connecting to camera...")
 cap = cv2.VideoCapture(0)
+
+print("Waiting for cached model to load...")
 time.sleep(3)
+
+print("Initialising program...")
+SHOW_IMAGE_OUTPUT = False
 
 # List of the strings that is used to add correct label for each box.
 PATH_TO_LABELS = os.path.join('data', 'mscoco_label_map.pbtxt')
@@ -30,6 +35,7 @@ category_index = label_map_util.create_category_index(categories)
 # Size, in inches, of the output images.
 IMAGE_SIZE = (12, 8)
 
+print("Creating Tensorflow session...")
 with detection_graph.as_default():
   with tf.Session(graph=detection_graph) as sess:
     # Definite input and output Tensors for detection_graph
@@ -42,6 +48,7 @@ with detection_graph.as_default():
     detection_classes = detection_graph.get_tensor_by_name('detection_classes:0')
     num_detections = detection_graph.get_tensor_by_name('num_detections:0')
 
+    print("Running model...")
     while True:
         ret, image_np = cap.read()
         # image = Image.open(image_path)
