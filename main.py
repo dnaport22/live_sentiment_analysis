@@ -13,6 +13,9 @@ from helper.object_slicer import ObjectSlicer
 from utils import label_map_util
 from helper.sentiment_analysis import SentimentAnalysis
 
+SHOW_IMAGE_OUTPUT = False
+DOWNLOAD_FROZEN_MODEL_ONLOAD = False
+
 print("Connecting to camera...")
 cap = cv2.VideoCapture(0)
 time.sleep(3)
@@ -22,16 +25,16 @@ MODEL_NAME = 'ssd_mobilenet_v1_coco_11_06_2017'
 MODEL_FILE = MODEL_NAME + '.tar.gz'
 DOWNLOAD_BASE = 'http://download.tensorflow.org/models/object_detection/'
 
-opener = urllib.request.URLopener()
-opener.retrieve(DOWNLOAD_BASE + MODEL_FILE, MODEL_FILE)
-tar_file = tarfile.open(MODEL_FILE)
-for file in tar_file.getmembers():
-  file_name = os.path.basename(file.name)
-  if 'frozen_inference_graph.pb' in file_name:
-      tar_file.extract(file, os.getcwd())
+if DOWNLOAD_FROZEN_MODEL_ONLOAD:
+    opener = urllib.request.URLopener()
+    opener.retrieve(DOWNLOAD_BASE + MODEL_FILE, MODEL_FILE)
+    tar_file = tarfile.open(MODEL_FILE)
+    for file in tar_file.getmembers():
+        file_name = os.path.basename(file.name)
+        if 'frozen_inference_graph.pb' in file_name:
+            tar_file.extract(file, os.getcwd())
 
 print("Initialising program...")
-SHOW_IMAGE_OUTPUT = False
 
 # List of the strings that is used to add correct label for each box.
 PATH_TO_LABELS = os.path.join('data', 'mscoco_label_map.pbtxt')
