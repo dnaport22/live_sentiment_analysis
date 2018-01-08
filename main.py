@@ -20,12 +20,11 @@ print("Connecting to camera...")
 cap = cv2.VideoCapture(0)
 time.sleep(3)
 
-print("Updating object detection model...")
-MODEL_NAME = 'ssd_mobilenet_v1_coco_11_06_2017'
-MODEL_FILE = MODEL_NAME + '.tar.gz'
-DOWNLOAD_BASE = 'http://download.tensorflow.org/models/object_detection/'
-
 if DOWNLOAD_FROZEN_MODEL_ONLOAD:
+    print("Updating object detection model...")
+    MODEL_NAME = 'ssd_mobilenet_v1_coco_11_06_2017'
+    MODEL_FILE = MODEL_NAME + '.tar.gz'
+    DOWNLOAD_BASE = 'http://download.tensorflow.org/models/object_detection/'
     opener = urllib.request.URLopener()
     opener.retrieve(DOWNLOAD_BASE + MODEL_FILE, MODEL_FILE)
     tar_file = tarfile.open(MODEL_FILE)
@@ -35,6 +34,8 @@ if DOWNLOAD_FROZEN_MODEL_ONLOAD:
             tar_file.extract(file, os.getcwd())
 
 print("Initialising program...")
+
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = os.getcwd() + "/keys/acgkey.json"
 
 # List of the strings that is used to add correct label for each box.
 PATH_TO_LABELS = os.path.join('data', 'mscoco_label_map.pbtxt')
