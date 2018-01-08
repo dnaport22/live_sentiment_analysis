@@ -3,6 +3,8 @@ import numpy as np
 import tensorflow as tf
 import os
 import time
+import six.moves.urllib as urllib
+import tarfile
 
 # Imports the Google Cloud client library
 import cv2
@@ -13,9 +15,20 @@ from helper.sentiment_analysis import SentimentAnalysis
 
 print("Connecting to camera...")
 cap = cv2.VideoCapture(0)
-
-print("Waiting for cached model to load...")
 time.sleep(3)
+
+print("Updating object detection model...")
+MODEL_NAME = 'ssd_mobilenet_v1_coco_11_06_2017'
+MODEL_FILE = MODEL_NAME + '.tar.gz'
+DOWNLOAD_BASE = 'http://download.tensorflow.org/models/object_detection/'
+
+opener = urllib.request.URLopener()
+opener.retrieve(DOWNLOAD_BASE + MODEL_FILE, MODEL_FILE)
+tar_file = tarfile.open(MODEL_FILE)
+for file in tar_file.getmembers():
+  file_name = os.path.basename(file.name)
+  if 'frozen_inference_graph.pb' in file_name:
+      tar_file.extract(file, os.getcwd())
 
 print("Initialising program...")
 SHOW_IMAGE_OUTPUT = False
