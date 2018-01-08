@@ -1,6 +1,4 @@
 import numpy as np
-import six.moves.urllib as urllib
-import tarfile
 import tensorflow as tf
 import os
 import time
@@ -12,29 +10,15 @@ from helper.object_slicer import ObjectSlicer
 from utils import label_map_util
 from helper.sentiment_analysis import SentimentAnalysis
 
-cap = cv2.VideoCapture(1)
+SHOW_IMAGE_OUTPUT = False
+
+cap = cv2.VideoCapture(0)
 time.sleep(3)
-
-# What model to download.
-MODEL_NAME = 'ssd_mobilenet_v1_coco_11_06_2017'
-MODEL_FILE = MODEL_NAME + '.tar.gz'
-DOWNLOAD_BASE = 'http://download.tensorflow.org/models/object_detection/'
-
-# Path to frozen detection graph. This is the actual model that is used for the object detection.
-PATH_TO_CKPT = MODEL_NAME + '/frozen_inference_graph.pb'
 
 # List of the strings that is used to add correct label for each box.
 PATH_TO_LABELS = os.path.join('data', 'mscoco_label_map.pbtxt')
 
 NUM_CLASSES = 90
-
-opener = urllib.request.URLopener()
-opener.retrieve(DOWNLOAD_BASE + MODEL_FILE, MODEL_FILE)
-tar_file = tarfile.open(MODEL_FILE)
-for file in tar_file.getmembers():
-  file_name = os.path.basename(file.name)
-  if 'frozen_inference_graph.pb' in file_name:
-    tar_file.extract(file, os.getcwd())
 
 graph = DetectionGraph()
 detection_graph = graph.get_model()
@@ -84,9 +68,10 @@ with detection_graph.as_default():
         analysis = SentimentAnalysis(slicer.image_to_analyse)
         print(analysis.get_sentiments())
 
-        cv2.imshow('object detection', cv2.resize(image_np, (1220, 600)))
-        if cv2.waitKey(25) & 0xFF == ord('q'):
-            cv2.destroyAllWindows()
+        if SHOW_IMAGE_OUTPUT:
+            cv2.imshow('object detection', cv2.resize(image_np, (1220, 600)))
+            if cv2.waitKey(25) & 0xFF == ord('q'):
+                cv2.destroyAllWindows()
             break
 
 
