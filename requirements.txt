@@ -61,7 +61,7 @@ pyparsing==2.2.0
 python-dateutil==2.6.1
 pytz==2017.3
 requests==2.18.4
-rsa==3.4.2
+rsa==4.7
 six==1.11.0
 tensorflow==1.4.0
 tensorflow-tensorboard==0.4.0rc2
